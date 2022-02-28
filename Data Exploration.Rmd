@@ -15,7 +15,7 @@ library(tidyverse)
 We can read the data from the CSV file into a dataframe.
 
 ```{r listings}
-listings <- readr::read_csv('AB_NYC_2019.csv')
+listings <- readr::read_csv('data/AB_NYC_2019.csv')
 listings
 ```
 
