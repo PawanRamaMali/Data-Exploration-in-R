@@ -1,0 +1,74 @@
+# Data Exploration
+
+## Introduction
+
+Since 2008, guests and hosts have used Airbnb to expand on traveling possibilities and present more unique, personalized way of experiencing the world. This dataset describes the listing activity and metrics in NYC, NY for 2019. The original source for this data can be found on this http://insideairbnb.com/. In this article, we will explore this data to gain valuable insights into listings.
+
+Let us start by loading up the necessary packages.
+
+```{r setup}
+library(tidyverse)
+```
+
+## Read Data
+
+We can read the data from the CSV file into a dataframe.
+
+```{r listings}
+listings <- readr::read_csv('AB_NYC_2019.csv')
+listings
+```
+
+## Explore Data
+
+There are many different questions to explore with this data. Let us start by looking at the top neighborhoods with listings.
+
+```{r by-neighbourhood}
+by_neighbourhood <- listings %>%
+  count(neighbourhood, name = 'nb_listings', sort = TRUE)
+
+by_neighbourhood
+```
+Let us visualize the data using a horizontal bar plot.
+
+```{r plot-by-neighbourhood}
+plot_by_neighbourhood <- by_neighbourhood %>%
+  head(10) %>%
+  mutate(neighbourhood = forcats::fct_reorder(neighbourhood, nb_listings)) %>%
+  ggplot(aes(x = nb_listings, y = neighbourhood)) +
+  geom_col() +
+  labs(
+    title = 'Top 10 NYC Neighbourhoods with Airbnb listings',
+    subtitle = '',
+    x = '',
+    y = ''
+  ) +
+  theme(
+    plot.title.position = 'plot'
+  )
+
+plot_by_neighbourhood
+```
+
+How about the distribution of prices across neighbourhoods? Rather than looking at neighbourhoods, we will focus our attention on neighbourhood groups.
+
+```{r plot-listings-price-violin}
+plot_listings_price_violin <- listings %>%
+  filter(price <= 500) %>%
+  ggplot(aes(x = neighbourhood_group, y = price)) +
+  geom_violin(aes(fill = neighbourhood_group)) +
+  labs(
+    title = 'Distribution of prices by neighbourhood group',
+    subtitle = '',
+    caption = 'Source: NYC Airbnb Listings (2019)',
+    x = '',
+    y = '$USD',
+    fill = ''
+  ) +
+  theme(
+    plot.title.position = 'plot',
+    legend.position = 'bottom'
+  )
+
+plot_listings_price_violin
+```
